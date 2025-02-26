@@ -29,6 +29,10 @@ inputs:
     description: 'Colour for the edge of the card in hex. Defaults to the usual red/green/purple github colors for actions.'
     required: false
     default: ''
+  show_author:
+    description: 'Show the author of the action in the card. Defaults to true.'
+    required: false
+    default: true
   custom_image_url:
     description: 'Include custom image on card, include_image must be true'
     required: false

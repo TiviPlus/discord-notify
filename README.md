@@ -10,6 +10,7 @@ This action sends a notification to Discord.
 | `title`            |                    |           | Title for card                                                                                                            |
 | `message`          |                    |           | Content of card                                                                                                           |
 | `include_image`    |                    |  `true`  | If action is used in a pull request, attach the preview image for it to the card. Can be overridden by `custom_image_url` |
+| `show_author`    |                    |  `false`  | if action is a Pull request, whether to show the author in the card |
 | `colour`           |                    |           | Colour for the edge of the card in hex                                                                                    |
 | `username`         |                    | `GitHub`  | Username to send message as                                                                                               |
 | `avatar_url`       |                    |           | Avatar to use for user                                                                                                    |

@@ -6,8 +6,14 @@ type Embed = {
   title?: string
   description: string
   color?: number
+  author?: AuthorEmbed
   image?: ImageEmbed
   url?: string
+}
+
+type AuthorEmbed = {
+  name: string
+  icon_url: string
 }
 
 type ImageEmbed = {
@@ -18,6 +24,7 @@ type Body = {
   avatar_url?: string
   username?: string
   embeds: Embed[]
+  flags: number
 }
 
 async function run(): Promise<void> {
@@ -28,6 +35,7 @@ async function run(): Promise<void> {
     const avatar_url = core.getInput('avatar_url')
     const username = core.getInput('username')
     const colour = core.getInput('colour')
+    const show_author = core.getBooleanInput('show_author')
     const include_image = core.getBooleanInput('include_image')
     const custom_image_url = core.getInput('custom_image_url')
     const title_url = core.getInput('title_url')
@@ -75,6 +83,20 @@ async function run(): Promise<void> {
       embed.color = parseInt('#bd2c00'.replace('#', ''), 16) // pr closed or error. github milano red color
     }
 
+    if (show_author) {
+      if (github.context.payload.pull_request) {
+        embed.author = {
+          name: github.context.payload.pull_request.user.login,
+          icon_url: github.context.payload.pull_request.user.avatar_url
+        }
+      }
+    } else {
+      embed.author = {
+        name: github.context.actor,
+        icon_url: ''
+      }
+    }
+
     if (title_url !== '') {
       embed.url = title_url
     }
@@ -93,7 +115,8 @@ async function run(): Promise<void> {
     }
 
     const body: Body = {
-      embeds: [embed]
+      embeds: [embed],
+      flags: 0 // flags: 4 (SUPPRESS_EMBEDS)
     }
 
     if (avatar_url !== '') {
