@@ -46,7 +46,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 function run() {
-    var _a, _b, _c, _d, _e, _f;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const webhookUrl = core.getInput('webhook_url', { required: true });
@@ -62,7 +62,7 @@ function run() {
             const embed = {
                 description: message
             };
-            if (title === '') {
+            if (title === 'GET_ACTION') {
                 const prNumber = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number; // PRs # number
                 const prUser = (_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.user.login; // PR creator
                 const actionUser = github.context.actor; // The user who performed the action
@@ -87,6 +87,31 @@ function run() {
             else {
                 embed.title = title;
             }
+            if (message === 'GET_ACTION') {
+                const prNumber = (_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.number; // PRs # number
+                const prUser = (_g = github.context.payload.pull_request) === null || _g === void 0 ? void 0 : _g.user.login; // PR creator
+                const actionUser = github.context.actor; // The user who performed the action
+                const prMergedBy = ((_j = (_h = github.context.payload.pull_request) === null || _h === void 0 ? void 0 : _h.merged_by) === null || _j === void 0 ? void 0 : _j.login) || 'Unknown';
+                if (github.context.payload.action === 'opened') {
+                    embed.description = `**Pull Request #${prNumber} Opened by ${prUser}**`;
+                }
+                else if (github.context.payload.action === 'reopened') {
+                    embed.description = `**Pull Request #${prNumber} Reopened by ${actionUser}**`;
+                }
+                else if (github.context.payload.action === 'closed' &&
+                    ((_k = github.context.payload.pull_request) === null || _k === void 0 ? void 0 : _k.merged)) {
+                    embed.description = `**Pull Request #${prNumber} Merged by ${prMergedBy}**`;
+                }
+                else if (github.context.payload.action === 'closed') {
+                    embed.description = `**Pull Request #${prNumber} Closed by ${actionUser}**`;
+                }
+                else {
+                    embed.description = `**Pull Request #${prNumber} Event**`; // Fallback for unknown actions
+                }
+            }
+            else {
+                embed.description = message;
+            }
             if (colour !== '') {
                 embed.color = parseInt(colour.replace('#', ''), 16);
             }
@@ -95,7 +120,7 @@ function run() {
                 embed.color = parseInt('#6cc644'.replace('#', ''), 16); // open or reopen. Github mantis color
             }
             else if (github.context.payload.action === 'closed' &&
-                ((_f = github.context.payload.pull_request) === null || _f === void 0 ? void 0 : _f.merged)) {
+                ((_l = github.context.payload.pull_request) === null || _l === void 0 ? void 0 : _l.merged)) {
                 embed.color = parseInt('#6e5494'.replace('#', ''), 16); // merged. github butterfly bush color
             }
             else {
