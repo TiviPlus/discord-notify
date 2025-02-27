@@ -44,7 +44,7 @@ async function run(): Promise<void> {
       description: message
     }
 
-    if (title === '') {
+    if (title === 'GET_ACTION') {
       const prNumber = github.context.payload.pull_request?.number // PRs # number
       const prUser = github.context.payload.pull_request?.user.login // PR creator
       const actionUser = github.context.actor // The user who performed the action
@@ -67,6 +67,31 @@ async function run(): Promise<void> {
       }
     } else {
       embed.title = title
+    }
+
+    if (message === 'GET_ACTION') {
+      const prNumber = github.context.payload.pull_request?.number // PRs # number
+      const prUser = github.context.payload.pull_request?.user.login // PR creator
+      const actionUser = github.context.actor // The user who performed the action
+      const prMergedBy =
+        github.context.payload.pull_request?.merged_by?.login || 'Unknown'
+
+      if (github.context.payload.action === 'opened') {
+        embed.description = `**Pull Request #${prNumber} Opened by ${prUser}**`
+      } else if (github.context.payload.action === 'reopened') {
+        embed.description = `**Pull Request #${prNumber} Reopened by ${actionUser}**`
+      } else if (
+        github.context.payload.action === 'closed' &&
+        github.context.payload.pull_request?.merged
+      ) {
+        embed.description = `**Pull Request #${prNumber} Merged by ${prMergedBy}**`
+      } else if (github.context.payload.action === 'closed') {
+        embed.description = `**Pull Request #${prNumber} Closed by ${actionUser}**`
+      } else {
+        embed.description = `**Pull Request #${prNumber} Event**` // Fallback for unknown actions
+      }
+    } else {
+      embed.description = message
     }
 
     if (colour !== '') {
