@@ -65,6 +65,8 @@ async function run(): Promise<void> {
       } else {
         embed.title = `**Pull Request #${prNumber} Event**` // Fallback for unknown actions
       }
+    } else {
+      embed.title = title
     }
 
     if (colour !== '') {
@@ -92,7 +94,7 @@ async function run(): Promise<void> {
       }
     } else {
       embed.author = {
-        name: github.context.actor,
+        name: '',
         icon_url: ''
       }
     }
