@@ -84,6 +84,9 @@ function run() {
                     embed.title = `**Pull Request #${prNumber} Event**`; // Fallback for unknown actions
                 }
             }
+            else {
+                embed.title = title;
+            }
             if (colour !== '') {
                 embed.color = parseInt(colour.replace('#', ''), 16);
             }
@@ -105,12 +108,6 @@ function run() {
                         icon_url: github.context.payload.pull_request.user.avatar_url
                     };
                 }
-            }
-            else {
-                embed.author = {
-                    name: github.context.actor,
-                    icon_url: ''
-                };
             }
             if (title_url !== '') {
                 embed.url = title_url;

@@ -92,11 +92,6 @@ async function run(): Promise<void> {
           icon_url: github.context.payload.pull_request.user.avatar_url
         }
       }
-    } else {
-      embed.author = {
-        name: '',
-        icon_url: ''
-      }
     }
 
     if (title_url !== '') {
